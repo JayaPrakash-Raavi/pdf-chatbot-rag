@@ -9,8 +9,8 @@ export default function UploadPage() {
 
   async function handleUpload() {
     if (!file) return;
-    const res = await uploadPDF(file);
-    navigate(`/chat/${res.document_id}`);
+    const result = await uploadPDF(file);
+    navigate(`/chat/${result.document_id}`);
   }
 
   return (
