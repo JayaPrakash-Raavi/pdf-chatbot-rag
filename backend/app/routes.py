@@ -11,9 +11,9 @@ import io
 router = APIRouter()
 
 
-# -------------------------
+# =========================
 # Upload PDF + Build RAG
-# -------------------------
+# =========================
 @router.post("/upload")
 async def upload(file: UploadFile = File(...)):
     if not file.filename.lower().endswith(".pdf"):
@@ -25,7 +25,7 @@ async def upload(file: UploadFile = File(...)):
     db: Session = SessionLocal()
 
     try:
-        # Check for existing document (deduplication)
+        # Deduplication
         existing = db.query(Document).filter_by(file_hash=file_hash).first()
         if existing:
             return {
@@ -44,7 +44,7 @@ async def upload(file: UploadFile = File(...)):
 
         document_id = str(doc.id)
 
-        # Store PDF permanently
+        # Store PDF in Supabase Storage
         upload_pdf(document_id, pdf_bytes)
 
         # Extract + chunk text
@@ -57,7 +57,7 @@ async def upload(file: UploadFile = File(...)):
                 detail="No readable text found in PDF"
             )
 
-        # Build embeddings + FAISS and store in Supabase
+        # Build embeddings + store index
         build_and_store_index(document_id, chunks)
 
         return {
@@ -69,9 +69,9 @@ async def upload(file: UploadFile = File(...)):
         db.close()
 
 
-# -------------------------
+# =========================
 # Chat Endpoint (RAG)
-# -------------------------
+# =========================
 @router.post("/chat")
 def chat(payload: dict):
     question = payload.get("question")
@@ -90,9 +90,9 @@ def chat(payload: dict):
     }
 
 
-# -------------------------
+# =========================
 # Download Original PDF
-# -------------------------
+# =========================
 @router.get("/documents/{document_id}/download")
 def download(document_id: str):
     pdf_bytes = download_pdf(document_id)
