@@ -10,11 +10,11 @@ type Message = {
 
 export default function ChatPage() {
   const { documentId } = useParams();
-  const [question, setQuestion] = useState("");
   const [messages, setMessages] = useState<Message[]>([]);
+  const [question, setQuestion] = useState("");
 
   async function send() {
-    if (!documentId || !question) return;
+    if (!question || !documentId) return;
 
     setMessages((m) => [...m, { role: "user", text: question }]);
     setQuestion("");
@@ -24,22 +24,20 @@ export default function ChatPage() {
   }
 
   return (
-    <div className="chat-container">
-      <h2>Resume Chat</h2>
-
-      <div className="chat-box">
+    <div className="chat-page">
+      <div className="chat-messages">
         {messages.map((m, i) => (
-          <div key={i} className={`message ${m.role}`}>
+          <div key={i} className={`msg ${m.role}`}>
             {m.text}
           </div>
         ))}
       </div>
 
-      <div className="input-row">
+      <div className="chat-input">
         <input
           value={question}
           onChange={(e) => setQuestion(e.target.value)}
-          placeholder="Ask about this resume..."
+          placeholder="Ask about the PDF..."
         />
         <button onClick={send}>Send</button>
       </div>

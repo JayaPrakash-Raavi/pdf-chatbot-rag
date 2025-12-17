@@ -1,19 +1,20 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "./UploadPage.css";
 import { uploadPDF } from "../lib/api";
 
 export default function UploadPage() {
   const [file, setFile] = useState<File | null>(null);
-  const [link, setLink] = useState("");
+  const navigate = useNavigate();
 
   async function handleUpload() {
     if (!file) return;
     const res = await uploadPDF(file);
-    setLink(`${window.location.origin}/chat/${res.document_id}`);
+    navigate(`/chat/${res.document_id}`);
   }
 
   return (
-    <div className="upload-container">
+    <div className="upload-page">
       <h1>Hybrid Resume Chatbot</h1>
 
       <input
@@ -23,13 +24,6 @@ export default function UploadPage() {
       />
 
       <button onClick={handleUpload}>Upload PDF</button>
-
-      {link && (
-        <div className="share-box">
-          <p>Share this link:</p>
-          <a href={link}>{link}</a>
-        </div>
-      )}
     </div>
   );
 }
