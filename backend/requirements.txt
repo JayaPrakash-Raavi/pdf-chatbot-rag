@@ -3,8 +3,9 @@ uvicorn
 python-multipart
 sqlalchemy
 psycopg2-binary
-python-dotenv
 supabase
 pypdf
 fastembed
 faiss-cpu
+numpy
+groq
